@@ -14,11 +14,15 @@ namespace ReqRep
                 Instance = this;
             
                 onSendRequest = new UnityEvent();
+                onClientBusy = new UnityEvent();
+                onClientFree = new UnityEvent();
             }
             else
                 Destroy(this);
         }
 
         public UnityEvent onSendRequest;
+        public UnityEvent onClientBusy;
+        public UnityEvent onClientFree;
     }
 }

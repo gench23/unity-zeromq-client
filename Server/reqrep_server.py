@@ -11,7 +11,7 @@ while True:
     message_rx = socket.recv()
     print(f"Received request: {message_rx}")
 
-    #  so something
+    #  do something
     time.sleep(1)
 
     #  reply to client

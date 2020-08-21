@@ -16,7 +16,9 @@ namespace ReqRep
 
         private void OnClientRequest()
         {
+            EventManager.Instance.onClientBusy.Invoke();
             _listener.RequestMessage();
+            EventManager.Instance.onClientFree.Invoke();
         }
 
         private void HandleMessage(string message)
