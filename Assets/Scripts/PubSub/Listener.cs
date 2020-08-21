@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Threading;
 using NetMQ;
 using NetMQ.Sockets;
-using UnityEngine;
 
 namespace PubSub
 {
@@ -47,12 +46,11 @@ namespace PubSub
             {
                 subSocket.Options.ReceiveHighWatermark = 1000;
                 subSocket.Connect($"tcp://{_host}:{_port}");
-                subSocket.Subscribe("");
+                subSocket.SubscribeToAnyTopic();
                 while (!_clientCancelled)
                 {
-                    if (!subSocket.TryReceiveFrameString(out var frameString)) continue;
-                    Debug.Log(frameString);
-                    _messageQueue.Enqueue(frameString);
+                    if (!subSocket.TryReceiveFrameString(out var message)) continue;
+                    _messageQueue.Enqueue(message);
                 }
                 subSocket.Close();
             }

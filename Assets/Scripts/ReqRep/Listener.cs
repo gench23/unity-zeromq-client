@@ -19,16 +19,23 @@ namespace ReqRep
 
         public void RequestMessage()
         {
-            string message;
+            var messageReceived = false;
+            var message = "";
             AsyncIO.ForceDotNet.Force();
+
+            var timeout = new TimeSpan(0, 0, 2);
             using (var socket = new RequestSocket())
             {
                 socket.Connect($"tcp://{_host}:{_port}");
-                socket.SendFrame("Hello");
-                message = socket.ReceiveFrameString();
+                if (socket.TrySendFrame("Hello"))
+                {
+                    messageReceived = socket.TryReceiveFrameString(timeout, out message);
+                }
             }
 
             NetMQConfig.Cleanup();
+            if (!messageReceived)
+                message = "Could not receive message from server!";
             _messageCallback(message);
         }
     }

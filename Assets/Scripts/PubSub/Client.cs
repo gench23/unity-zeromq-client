@@ -23,7 +23,7 @@ namespace PubSub
             EventManager.Instance.onStartClient.AddListener(OnStartClient);
             EventManager.Instance.onClientStarted.AddListener(() => _clientStatus = ClientStatus.Active);
             EventManager.Instance.onStopClient.AddListener(OnStopClient);
-            EventManager.Instance.onClientStopped.AddListener(() => _clientStatus = ClientStatus.Deactivating);
+            EventManager.Instance.onClientStopped.AddListener(() => _clientStatus = ClientStatus.Inactive);
         }
 
         private void Update()
@@ -34,7 +34,8 @@ namespace PubSub
 
         private void OnDestroy()
         {
-            _listener.Stop();
+            if (_clientStatus != ClientStatus.Inactive)
+                OnStopClient();
         }
 
         private void HandleMessage(string message)
@@ -45,16 +46,16 @@ namespace PubSub
         private void OnStartClient()
         {
             Debug.Log("Starting client...");
-            _listener.Start();
             _clientStatus = ClientStatus.Activating;
+            _listener.Start();
             Debug.Log("Client started!");
         }
 
         private void OnStopClient()
         {
             Debug.Log("Stopping client...");
-            _listener.Stop();
             _clientStatus = ClientStatus.Deactivating;
+            _listener.Stop();
             Debug.Log("Client stopped!");
         }
     }
